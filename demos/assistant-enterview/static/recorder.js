@@ -13,13 +13,9 @@ function recorder(url, handler) {
     }
 }
 
-/**
- * Al ser un proyecto pequeño uso doc.getById como maniaco
- * Si no te gusta, puedes cambiarlo ;)
- */
 async function record() {
     try {
-        document.getElementById("text").innerHTML = "<i>Grabando...</i>";
+        document.getElementById("text").innerHTML = "<i>Recording...</i>";
         document.getElementById("record").style.display="none";
         document.getElementById("stop").style.display="";
         document.getElementById("record-stop-label").style.display="block"
@@ -28,7 +24,7 @@ async function record() {
 
         blobs = [];
 
-        //Grabar audio, blabla
+        //Record audio
         stream = await navigator.mediaDevices.getUserMedia({audio:true, video:false})
         rec = new MediaRecorder(stream);
         rec.ondataavailable = e => {
