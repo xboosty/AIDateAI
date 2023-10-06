@@ -22,5 +22,7 @@ def index():
 def audio():
     #Obtener audio grabado y transcribirlo
     audio = request.files.get("audio")
+    audio.save("audio.mp3")
+    audio_file = open("audio.mp3","rb")    
     text = Transcriber().transcribe(audio)
     return {"result":"ok","text":text}
