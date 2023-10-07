@@ -14,9 +14,9 @@ engine = pyttsx3.init()
 def transcribe_audio_to_text(filename):
     recognizer = sr.Recognizer()
     with sr.AudioFile(filename) as source:
-        audio = recognizer. record (source)
+        audio = recognizer.record(source)
     try:
-        return recognizer. recognize_google(audio)
+        return recognizer.recognize_google(audio)
     except:
         print('Skipping unknown error')
 
@@ -33,7 +33,7 @@ def generate_response (prompt):
 
 def speak_text(text):
     engine.say(text)
-    engine.runAndast()
+    engine.runAndWait()
 
 def main():
     while True:
