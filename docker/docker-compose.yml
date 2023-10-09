@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: ntsprint-aidateai-postgres
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: aidate
+      POSTGRES_PASSWORD: aidate
+      POSTGRES_DB: assitantdb
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - docker_ai
+  rabbitmq:
+    container_name: ntsprint-aidateai-rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: aidate
+      RABBITMQ_DEFAULT_PASS: aidate
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - docker_ai
+networks:
+  docker_ai:
+    name: docker_ai
