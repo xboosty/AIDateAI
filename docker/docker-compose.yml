@@ -1,32 +1,33 @@
-version: '3.9'
-
+version: '3'
 services:
-  db:
+  postgres:
     container_name: ntsprint-aidateai-postgres
-    image: postgres
-    restart: always
+    image: postgres:latest
     environment:
       POSTGRES_USER: aidate
       POSTGRES_PASSWORD: aidate
       POSTGRES_DB: assitantdb
-    volumes:
-      - ./data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
-    networks:
-      - docker_ai
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   rabbitmq:
     container_name: ntsprint-aidateai-rabbitmq
-    image: rabbitmq:3-management
-    restart: always
-    environment:
-      RABBITMQ_DEFAULT_USER: aidate
-      RABBITMQ_DEFAULT_PASS: aidate
+    image: "rabbitmq:3.8-management"
     ports:
-      - 5672:5672
-      - 15672:15672
-    networks:
-      - docker_ai
-networks:
-  docker_ai:
-    name: docker_ai
+      - "15672:15672"
+      - "5672:5672"
+
+  python-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./assistant_enterview:/app
+    depends_on:
+      - postgres
+      - rabbitmq
+    command: ["python", "api.py"] # Puedes cambiar "api.py" por el archivo que quieras ejecutar
+volumes:
+  postgres_data:
