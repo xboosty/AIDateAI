@@ -1,20 +1,35 @@
 import openai
 import pyttsx3
 import speech_recognition as sr
-import time
+import os
+from files.files import Files
 
 #START TEXT TO SPEECH AS engine
 engine = pyttsx3.init()
 presentation = "Hello, I am the virtual assistant designed to conduct our interview with you."
-questions = [
-    "How many children do you have?",
-    "You like children?",
-    "What is your favorite color?",
-    "What do you think about the war in Ukraine?",
-    "How do you define yourself?",
-    "What is your sexual orientation? If you think it is better not to answer, say that you will not answer this question.",
-    "What types of people are you interested in meeting?"
-]
+questions = []
+closure = "Bye."
+
+files = Files()
+
+enterview1 = files.getConcatPathToRoot("enterview1")
+
+def loadConversation(enterview):
+    pr = ""
+    cl = ""
+    qts = []
+    with open(files.joinPath(enterview, "presentation.txt"),"r") as f:
+        pr = f.read()
+    with open(files.joinPath(enterview, "closure.txt"),"r") as f:
+        cl = f.read()
+    files_in_enterview = os.listdir(enterview)
+    files_txt = [file for file in files_in_enterview if file.endswith(".txt")]
+    for file_txt in files_txt:
+        if file_txt != "presentation.txt" and file_txt != "closure.txt":
+            with open(files.joinPath(enterview, file_txt),"r") as f:
+                question = f.read()
+                qts.append(question)
+    return pr,cl,qts
 
 def transcribe_audio_to_text(filename):
     recognizer = sr.Recognizer()
@@ -30,6 +45,10 @@ def speak_text(text):
     engine.runAndWait()
 
 def main():
+    conversation = loadConversation(enterview1)
+    presentation = conversation[0]
+    closure = conversation[1]
+    questions = conversation[2]
     i=0
     # Read presentation using text-to-speech
     speak_text (presentation)
@@ -64,6 +83,7 @@ def main():
                             f.write(text)                        
             except Exception as e:
                 print("An error occurred: {}".format(e))
+    speak_text (closure)
 
 if __name__ == "__main__":
     main()

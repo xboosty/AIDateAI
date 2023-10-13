@@ -1,5 +1,5 @@
-# Utiliza la imagen oficial de Python 3.9
-FROM python:3.9
+# Utiliza la imagen oficial de Python 3.9 para Windows
+FROM winamd64/python:3.9.6-windowsservercore-1809
 
 # Instala las bibliotecas que necesitas
 RUN pip install --upgrade pip
@@ -25,4 +25,4 @@ COPY ./assistant_enterview /app
 WORKDIR /app
 
 # Comando predeterminado para ejecutar tu aplicación Python
-CMD ["python", "api.py"]
+CMD ["python", "kernel.py"]
