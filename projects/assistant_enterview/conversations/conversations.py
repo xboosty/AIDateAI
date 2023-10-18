@@ -1,4 +1,7 @@
 from .speaks.speak_text import Speaker
+from files.files import Files
+
+files = Files()
 
 class Conversation:
     
@@ -7,11 +10,16 @@ class Conversation:
         self.presentation = presentation
         self.questions = questions
         self.speaker = Speaker()
+        self.path_presentation = "presentation.txt"
         
     def setPresentation(self, newPresentation):
-        self.presentation = newPresentation
+        self.presentation = newPresentation        
         with open("presentation.txt","w") as f:
             f.write(self.presentation)
+            
+        
+    def setPathPresentation(self, path_presentation):
+        self.path_presentation = str(path_presentation)
         
     def getPresentation(self):
         with open("presentation.txt","r") as f:
@@ -22,7 +30,9 @@ class Conversation:
         self.questions = newQuestions
     
     def speakPresentation(self):
-        with open("presentation.txt","r") as f:
+        self.path_presentation = 'F:\\NTSprint\\work\\AIDateAI\\AIDateAI\\projects\\assistant_enterview\\presentation.txt'
+        print(self.path_presentation)
+        with open(self.path_presentation,"r") as f:
             text = f.read()
         self.speaker.speak_text(text)
         

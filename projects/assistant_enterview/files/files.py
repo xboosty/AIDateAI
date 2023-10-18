@@ -4,6 +4,7 @@ class Files:
     def __init__(self):
         # Get path root
         self.path_root = os.getcwd()
+        print(self.path_root)
     
     def getPathRoot(self):
         return self.path_root
@@ -16,3 +17,7 @@ class Files:
             
     def joinPath(self,pathX,pathY):
         return os.path.join(pathX, pathY)
+    
+    def createPathRoot(self,path):
+        with open(str(path)+"\\path.txt","w") as f:
+            f.write(path)
