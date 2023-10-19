@@ -19,7 +19,7 @@ questions = [
     "What types of people are you interested in meeting?"
 ]
 
-model_whisper = whisper.load_model("tiny")#cambiar por large para mejores resultados
+model_whisper = whisper.load_model("small")#cambiar por large para mejores resultados
 
 def transcribe_audio_to_text(filename):
     try:               
