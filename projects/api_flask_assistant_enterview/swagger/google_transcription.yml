@@ -1,0 +1,41 @@
+swagger: '2.0'
+info:
+  title: Google Speech Recognition API.
+  description: Transcribe audio using Google Speech Recognition API.
+  version: '1.0'
+consumes:
+  - multipart/form-data
+produces:
+  - application/json
+paths:
+  /transcribe-audio-google:
+    post:
+      summary: Transcribe audio using Google Speech Recognition API.
+      parameters:
+        - name: audio
+          in: formData
+          type: file
+          required: true
+          description: Audio file to transcribe.
+      responses:
+        '200':
+          description: Text transcribed from the audio file.
+          schema:
+            type: object
+            properties:
+              text_result:
+                type: string
+        '400':
+          description: Bad request.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
