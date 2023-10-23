@@ -1,10 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from dto.interview_dto import InterviewDto
+from persistence.interview_repository import InterviewRepository
+from configurations.config import get_db as async_session
 from services.interview_service import InterviewService
 
 router = APIRouter()
-interview_service = InterviewService()
+interview_repository = InterviewRepository(async_session())
+interview_service = InterviewService(interview_repository)
 
 @router.post("/interviews")
 async def create_interview(interview_dto: InterviewDto):

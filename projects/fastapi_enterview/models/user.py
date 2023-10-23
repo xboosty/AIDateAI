@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from database.base import Base
+from configurations.config import engine
 
 
 class User(Base):
@@ -15,3 +16,5 @@ class User(Base):
     
     def __repr__(self):
         return f"<User(email='{self.email}', avatar='{self.avatar}')>"
+    
+Base.metadata.create_all(bind=engine)

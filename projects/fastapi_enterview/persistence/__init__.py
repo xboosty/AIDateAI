@@ -1,11 +1,11 @@
 from .user_repository import UserRepository
-from .item_repository import ItemRepository
-from .order_repository import OrderRepository
-from .user_item_repository import UserItemRepository
+from .history_repository import HistoryRepository
+from .question_repository import QuestionRepository
+from .interview_repository import InterviewRepository
 
 __all__ = [
     'UserRepository',
-    'ItemRepository',
-    'OrderRepository',
-    'UserItemRepository'
+    'HistoryRepository',
+    'QuestionRepository',
+    'InterviewRepository'
 ]

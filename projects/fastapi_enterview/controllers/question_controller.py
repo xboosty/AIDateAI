@@ -1,10 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from dto.question_dto import QuestionDto
+from persistence.question_repository import QuestionRepository
+from configurations.config import get_db as async_session
 from services.question_service import QuestionService
 
 router = APIRouter()
-question_service = QuestionService()
+question_repository = QuestionRepository(async_session())
+question_service = QuestionService(question_repository)
 
 @router.post("/questions")
 async def create_question(question_dto: QuestionDto):

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-
 from database.base import Base
+from configurations.config import engine
 
 
 class Question(Base):
@@ -16,3 +16,5 @@ class Question(Base):
     
     def __repr__(self):
         return f"<Question(interview_id='{self.interview_id}',question='{self.question}')>"
+    
+Base.metadata.create_all(bind=engine)

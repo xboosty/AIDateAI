@@ -1,10 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from dto.history_dto import HistoryDto
+from persistence.history_repository import HistoryRepository
+from configurations.config import get_db as async_session
 from services.history_service import HistoryService
 
 router = APIRouter()
-history_service = HistoryService()
+history_repository = HistoryRepository(async_session())
+history_service = HistoryService(history_repository)
 
 @router.post("/historys")
 async def create_history(history_dto: HistoryDto):

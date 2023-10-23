@@ -1,10 +1,14 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from dto.user_dto import UserDto
+from persistence.user_repository import UserRepository
+from configurations.config import get_db as async_session
 from services.user_service import UserService
 
 router = APIRouter()
-service = UserService()
+
+user_repository = UserRepository(async_session())
+service = UserService(user_repository)
 
 @router.post("/users")
 async def create_user(user: UserDto):

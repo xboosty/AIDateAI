@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from models.history import PyEnum
 
 
 class HistoryDto(BaseModel):
@@ -7,7 +6,7 @@ class HistoryDto(BaseModel):
     user_id: int
     interview_id: int
     message: str
-    status_message: PyEnum
+    status_message: str
     hour: str
     is_response: bool
     audio: bytes

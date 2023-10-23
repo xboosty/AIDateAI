@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from database.base import Base
+from configurations.config import engine
 
 
 class Interview(Base):
@@ -17,3 +18,5 @@ class Interview(Base):
     
     def __repr__(self):
         return f"<Interview(title='{self.title}', initial_text='{self.initial_text}', closure_text='{self.closure_text}')>"
+    
+Base.metadata.create_all(bind=engine)
