@@ -12,10 +12,11 @@ class Interview(Base):
     closure_text = Column(String)
     
     users = relationship("User", secondary="histories", back_populates="interviews")
-    questions = relationship("Question", back_populates="interview")
-    histories = relationship("History", back_populates="interview")
+    questions = relationship("Question", back_populates="interview", cascade="all, delete-orphan")
+    histories = relationship("History", back_populates="interview", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<Interview(title='{self.title}', initial_text='{self.initial_text}', closure_text='{self.closure_text}')>"
+   
     
 Base.metadata.create_all(bind=engine)

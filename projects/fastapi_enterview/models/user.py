@@ -11,7 +11,7 @@ class User(Base):
     avatar = Column(String, nullable=False)
     
     interviews = relationship("Interview", secondary="histories", back_populates="users")
-    histories = relationship("History", back_populates="user")
+    histories = relationship("History", back_populates="user", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<User(email='{self.email}', avatar='{self.avatar}')>"

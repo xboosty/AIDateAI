@@ -33,6 +33,18 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+@router_user.get(
+    "/users/by-email/{email}",
+    tags=["users"],
+    response_model=UserDto,
+    description="Get a user by email",
+)
+def get_user_by_email(email: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
 @router_user.post(
     "/users",
     tags=["users"],
