@@ -2,18 +2,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from configurations.config import get_db
 from models.user import User
 
-
 class UserRepository:
     def __init__(self, db: AsyncSession = get_db()):
         self.db = db
 
-    def get_all_users(self):
+    def get_all_users(self) -> list[User]:
         return self.db.query(User).all()
 
     def get_user_by_id(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()
 
-    def create_user(self, user):
+    def create_user(self, user: User) -> User:
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)

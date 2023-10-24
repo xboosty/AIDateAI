@@ -21,7 +21,7 @@ async def create_user(user: UserDto):
 @router.get("/users")
 async def read_users():
     try:
-        users = service.read_users()
+        users = service.get_all_users()
         return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -29,7 +29,7 @@ async def read_users():
 @router.get("/users/{user_id}")
 async def read_user(user_id: int):
     try:
-        user = service.read_user(user_id)
+        user = service.get_user_by_id(user_id)
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
         return user

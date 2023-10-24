@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     DB_NAME: str = "assitantdb"
     ALLOWED_HOSTS: List[str] = ["*"]
 
+
 settings = Settings()
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}/{settings.DB_NAME}"
@@ -19,6 +20,6 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
 
-async def get_db():
-    async with SessionLocal() as session:
+def get_db():
+    with SessionLocal() as session:
         yield session

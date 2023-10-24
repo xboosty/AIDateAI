@@ -7,8 +7,8 @@ class History(Base):
     __tablename__ = "histories"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    interview_id = Column(Integer, ForeignKey("interviews.id"), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    interview_id = Column(Integer, ForeignKey("interviews.id"))
     message = Column(String, nullable=False)
     status_message = Column(String(length=7), nullable=False)
     hour = Column(String, nullable=False)

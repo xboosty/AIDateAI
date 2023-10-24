@@ -7,13 +7,11 @@ from persistence.user_repository import UserRepository
 
 
 class UserService:
-    def __init__(self, db: Session):
-        self.db = db
-        self.user_repository = UserRepository(db)
+    def __init__(self, user_repository: UserRepository):
+        self.user_repository = user_repository
 
     def get_all_users(self) -> List[UserDto]:
-        users = self.user_repository.get_all_users()
-        return [UserDto.from_orm(user) for user in users]
+        return self.question_repository.get_all()
 
     def get_user_by_id(self, user_id: int) -> UserDto:
         user = self.user_repository.get_user_by_id(user_id)

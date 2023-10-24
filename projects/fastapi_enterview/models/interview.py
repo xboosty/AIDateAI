@@ -7,8 +7,8 @@ from configurations.config import engine
 class Interview(Base):
     __tablename__ = "interviews"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    title = Column(String, unique=True)
     initial_text = Column(String)
     closure_text = Column(String)
     

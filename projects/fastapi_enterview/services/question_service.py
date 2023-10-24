@@ -12,7 +12,7 @@ class QuestionService:
         self.db = db
         self.question_repository = QuestionRepository(db)
 
-    def get_all_questions(self) -> List[Question]:
+    def get_all_questions(self) -> List[QuestionDto]:
         return self.question_repository.get_all()
 
     def get_question_by_id(self, question_id: int) -> Question:

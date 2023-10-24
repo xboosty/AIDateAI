@@ -7,7 +7,7 @@ from configurations.config import engine
 class Question(Base):
     __tablename__ = "questions"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     interview_id = Column(Integer, ForeignKey("interviews.id"))
     question = Column(String, nullable=False)
     type = Column(String, nullable=False)
