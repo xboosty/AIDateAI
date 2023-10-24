@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from database.base import Base
-from configurations.config import engine
+from configurations.config import engine, Base
 
 
 class Interview(Base):

@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from controllers.user_controller import router as user_router
-from controllers.interview_controller import router as interview_router
-from controllers.question_controller import router as question_router
-from controllers.history_controller import router as history_router
+from routes.user_routes import router_user
+from routes.interview_routes import router_interview
+from routes.question_routes import router_question
+from routes.history_routes import router_history
 from configurations.config import settings
 
 app = FastAPI()
@@ -17,8 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Set up routes
-app.include_router(user_router, prefix="/users", tags=["users"])
-app.include_router(interview_router, prefix="/interviews", tags=["interviews"])
-app.include_router(question_router, prefix="/questions", tags=["questions"])
-app.include_router(history_router, prefix="/histories", tags=["histories"])
+app.include_router(router_user, prefix="/users", tags=["users"])
+app.include_router(router_interview, prefix="/interviews", tags=["interviews"])
+app.include_router(router_question, prefix="/questions", tags=["questions"])
+app.include_router(router_history, prefix="/histories", tags=["histories"])

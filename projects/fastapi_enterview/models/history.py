@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, LargeBinary, CheckConstraint
 from sqlalchemy.orm import relationship
-from database.base import Base
-from configurations.config import engine
+from configurations.config import engine, Base
 
 class History(Base):
     __tablename__ = "histories"

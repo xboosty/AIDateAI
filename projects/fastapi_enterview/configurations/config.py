@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic_settings import BaseSettings
 from typing import List
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session,sessionmaker
 
 class Settings(BaseSettings):
     DB_USER: str = "aidate"
@@ -18,8 +18,13 @@ SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.DB_USER}:{settings.DB_PASSWOR
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def get_db():
-    with SessionLocal() as session:
-        yield session
+Base = declarative_base()
+
+def get_db() -> Session:
+    db = SessionLocal()
+    try:
+        yield db  # Proporciona la sesión a la ruta
+    finally:
+        db.close()
