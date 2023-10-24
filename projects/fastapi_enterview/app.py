@@ -1,12 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routes.transcription_routes import router_transcription
 from routes.user_routes import router_user
 from routes.interview_routes import router_interview
 from routes.question_routes import router_question
 from routes.history_routes import router_history
 from configurations.config import settings
 
-app = FastAPI()
+app = FastAPI(
+        title = "My FastAPI for AI Module",
+        description = "A REST API built with FastAPI for AI Module.",
+        version = "1.0.0",
+    )
 
 # Set up CORS middleware
 app.add_middleware(
@@ -19,6 +24,7 @@ app.add_middleware(
 
 
 # Set up routes
+app.include_router(router_transcription, prefix="/ai/transcriptions", tags=["transcriptions"])
 app.include_router(router_user, prefix="/users", tags=["users"])
 app.include_router(router_interview, prefix="/interviews", tags=["interviews"])
 app.include_router(router_question, prefix="/questions", tags=["questions"])
