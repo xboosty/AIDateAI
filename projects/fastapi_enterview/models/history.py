@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, LargeBinary, CheckConstraint
+from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, LargeBinary, CheckConstraint, DateTime
 from sqlalchemy.orm import relationship
 from configurations.config import engine, Base
+from datetime import datetime
 
 class History(Base):
     __tablename__ = "histories"
@@ -9,7 +10,8 @@ class History(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     interview_id = Column(Integer, ForeignKey("interviews.id"))
     message = Column(String, nullable=False)
-    status_message = Column(String(length=7), nullable=False)
+    status_message = Column(String(length=8), nullable=False)
+    date = Column(DateTime, default=datetime.now())
     hour = Column(String, nullable=False)
     is_response = Column(Boolean, nullable=False)
     audio = Column(LargeBinary, nullable=True)

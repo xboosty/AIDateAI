@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class HistoryDto(BaseModel):
@@ -6,6 +7,7 @@ class HistoryDto(BaseModel):
     interview_id: int
     message: str
     status_message: str
+    date: datetime
     hour: str
     is_response: bool
     audio: bytes

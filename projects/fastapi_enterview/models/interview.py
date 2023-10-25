@@ -17,6 +17,5 @@ class Interview(Base):
     
     def __repr__(self):
         return f"<Interview(title='{self.title}', initial_text='{self.initial_text}', closure_text='{self.closure_text}')>"
-   
     
 Base.metadata.create_all(bind=engine)
