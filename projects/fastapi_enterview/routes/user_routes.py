@@ -14,6 +14,7 @@ from models.interview import Interview
 from models.question import Question
 from sqlalchemy import asc
 from datetime import datetime
+from .security import oauth2_scheme
 
 router_user = APIRouter()
 
@@ -23,7 +24,7 @@ router_user = APIRouter()
     response_model=List[UserDtoOut],
     description="Get a list of all users",
 )
-def get_users(db: Session = Depends(get_db)):
+def get_users(current_user: str = Depends(oauth2_scheme),db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
 
@@ -34,7 +35,7 @@ def get_users(db: Session = Depends(get_db)):
     response_model=UserDtoOut,
     description="Get a user by ID",
 )
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(user_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -46,7 +47,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     response_model=List[InterviewByUserDto],
     description="Get a record of interviews by user ID",
 )
-def get_interviews_user(user_id: int, db: Session = Depends(get_db)):
+def get_interviews_user(user_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -65,7 +66,7 @@ def get_interviews_user(user_id: int, db: Session = Depends(get_db)):
     response_model=UserDtoOut,
     description="Get a user by email",
 )
-def get_user_by_email(email: str, db: Session = Depends(get_db)):
+def get_user_by_email(email: str, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     user = db.query(User).filter(User.email == email).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -77,7 +78,7 @@ def get_user_by_email(email: str, db: Session = Depends(get_db)):
     response_model=UserDtoOut,
     description="Create a new user",
 )
-def create_user(user_create: UserDtoIn, db: Session = Depends(get_db)):
+def create_user(user_create: UserDtoIn, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     user = User(**user_create.dict())  # Crear una instancia de User a partir de los datos del DTO
     db.add(user)
     db.commit()
@@ -90,7 +91,7 @@ def create_user(user_create: UserDtoIn, db: Session = Depends(get_db)):
     response_model=UserDtoOut,
     description="Update a user by ID",
 )
-def update_user(user_id: int, user_update: UserDtoIn, db: Session = Depends(get_db)):
+def update_user(user_id: int, user_update: UserDtoIn, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -109,7 +110,7 @@ def update_user(user_id: int, user_update: UserDtoIn, db: Session = Depends(get_
     response_model=None,
     description="Delete a user by ID",
 )
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+def delete_user(user_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")

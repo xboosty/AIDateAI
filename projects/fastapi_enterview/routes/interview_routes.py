@@ -7,6 +7,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from models.interview import Interview
 from fastapi.responses import JSONResponse
+from .security import oauth2_scheme
 
 router_interview = APIRouter()
 
@@ -16,7 +17,7 @@ router_interview = APIRouter()
     response_model=List[InterviewDtoOut],
     description="Get a list of all interviews",
 )
-def get_interviews(db: Session = Depends(get_db)):
+def get_interviews(db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     interviews = db.query(Interview).all()
     return interviews
 
@@ -27,7 +28,7 @@ def get_interviews(db: Session = Depends(get_db)):
     response_model=InterviewDtoOut,
     description="Get a interview by ID",
 )
-def get_interview(interview_id: int, db: Session = Depends(get_db)):
+def get_interview(interview_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     interview = db.query(Interview).filter(Interview.id == interview_id).first()
     if interview is None:
         raise HTTPException(status_code=404, detail="Interview not found")
@@ -39,7 +40,7 @@ def get_interview(interview_id: int, db: Session = Depends(get_db)):
     response_model=InterviewDtoOut,
     description="Create a new interview",
 )
-def create_interview(interview_create: InterviewDtoIn, db: Session = Depends(get_db)):
+def create_interview(interview_create: InterviewDtoIn, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     interview = Interview(**interview_create.dict())  # Crear una instancia de Interview a partir de los datos del DTO
     db.add(interview)
     db.commit()
@@ -52,7 +53,7 @@ def create_interview(interview_create: InterviewDtoIn, db: Session = Depends(get
     response_model=InterviewDtoOut,
     description="Update a interview by ID",
 )
-def update_interview(interview_id: int, interview_update: InterviewDtoIn, db: Session = Depends(get_db)):
+def update_interview(interview_id: int, interview_update: InterviewDtoIn, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     interview = db.query(Interview).filter(Interview.id == interview_id).first()
     if interview is None:
         raise HTTPException(status_code=404, detail="Interview not found")
@@ -71,7 +72,7 @@ def update_interview(interview_id: int, interview_update: InterviewDtoIn, db: Se
     response_model=None,
     description="Delete a interview by ID",
 )
-def delete_interview(interview_id: int, db: Session = Depends(get_db)):
+def delete_interview(interview_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     interview = db.query(Interview).filter(Interview.id == interview_id).first()
     if interview is None:
         raise HTTPException(status_code=404, detail="Interview not found")
