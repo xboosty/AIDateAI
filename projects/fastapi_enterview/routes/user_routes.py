@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from dto.user_dto import UserDto
+from dto.user_dto import UserDtoIn, UserDtoOut
 from dto.interview_by_user import InterviewByUserDto
 from dto.chat_day_by_user import ChatDayByUserDto
 from dto.message_by_user import MessageByUserDto
@@ -20,7 +20,7 @@ router_user = APIRouter()
 @router_user.get(
     "/users",
     tags=["users"],
-    response_model=List[UserDto],
+    response_model=List[UserDtoOut],
     description="Get a list of all users",
 )
 def get_users(db: Session = Depends(get_db)):
@@ -31,7 +31,7 @@ def get_users(db: Session = Depends(get_db)):
 @router_user.get(
     "/users/{user_id}",
     tags=["users"],
-    response_model=UserDto,
+    response_model=UserDtoOut,
     description="Get a user by ID",
 )
 def get_user(user_id: int, db: Session = Depends(get_db)):
@@ -62,7 +62,7 @@ def get_interviews_user(user_id: int, db: Session = Depends(get_db)):
 @router_user.get(
     "/users/by-email/{email}",
     tags=["users"],
-    response_model=UserDto,
+    response_model=UserDtoOut,
     description="Get a user by email",
 )
 def get_user_by_email(email: str, db: Session = Depends(get_db)):
@@ -74,10 +74,10 @@ def get_user_by_email(email: str, db: Session = Depends(get_db)):
 @router_user.post(
     "/users",
     tags=["users"],
-    response_model=UserDto,
+    response_model=UserDtoOut,
     description="Create a new user",
 )
-def create_user(user_create: UserDto, db: Session = Depends(get_db)):
+def create_user(user_create: UserDtoIn, db: Session = Depends(get_db)):
     user = User(**user_create.dict())  # Crear una instancia de User a partir de los datos del DTO
     db.add(user)
     db.commit()
@@ -87,10 +87,10 @@ def create_user(user_create: UserDto, db: Session = Depends(get_db)):
 @router_user.put(
     "/users/{user_id}",
     tags=["users"],
-    response_model=UserDto,
+    response_model=UserDtoOut,
     description="Update a user by ID",
 )
-def update_user(user_id: int, user_update: UserDto, db: Session = Depends(get_db)):
+def update_user(user_id: int, user_update: UserDtoIn, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -123,8 +123,8 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
 #AUXILIARES
 
 # Obtener el historial de un usuario por ID
-def get_histories_by_user(user_id: int, db: Session = Depends(get_db)):
-    histories_by_user = db.query(History).filter(History.user_id == user_id).order_by(asc(History.id)).all()
+def get_histories_by_user(user_id: int,interview_id:int, db: Session = Depends(get_db)):
+    histories_by_user = db.query(History).filter(History.user_id == user_id, History.interview_id==interview_id).order_by(asc(History.id)).all()
     if histories_by_user is None:
         return []
     
@@ -132,8 +132,8 @@ def get_histories_by_user(user_id: int, db: Session = Depends(get_db)):
    
    
 # Obtener el historial de chat de un usuario por ID y por dias    
-def get_chat_days_by_user(user_id: int, db: Session = Depends(get_db)):
-    histories_by_user = get_histories_by_user(user_id, db)    
+def get_chat_days_by_user(user_id: int,interview_id:int, db: Session = Depends(get_db)):
+    histories_by_user = get_histories_by_user(user_id,interview_id, db)    
     message_dtos = []
     chat_day_dtos = []
     if histories_by_user.__len__() > 0:
@@ -146,7 +146,7 @@ def get_chat_days_by_user(user_id: int, db: Session = Depends(get_db)):
                     status_message=history.status_message,
                     hour=history.hour,
                     is_bot=not history.is_response,
-                    audio=history.audio
+                    audio="" if history.audio is None else history.audio
                 ))
             else:                
                 chat_day_dtos.append(ChatDayByUserDto(
@@ -161,7 +161,7 @@ def get_chat_days_by_user(user_id: int, db: Session = Depends(get_db)):
                     status_message=history.status_message,
                     hour=history.hour,
                     is_bot=history.is_response,
-                    audio=history.audio
+                    audio="" if history.audio is None else history.audio
                 ))
         chat_day_dtos.append(ChatDayByUserDto(
             day=get_days(chat_day),
@@ -188,13 +188,13 @@ def get_percent_and_metadata_interview(user_id: int, interview_id: int, db: Sess
             count = count + 1
     
     return {
-                "percent_interview":str(int((count * 100) / questions.__len__()))+"%",
+                "percent_interview": str(int((count * 100) / questions.__len__()))+"%" if questions.__len__() > 0 else "0%",
                 "type_question":', '.join(list(set([question.type for question in questions]))), 
                 "title":interview.title, 
-                "is_complete":int((count * 100) / questions.__len__())==100,
+                "is_complete":int((count * 100) / questions.__len__())==100 if questions.__len__() > 0 else False,
                 "initial_text":interview.initial_text,
                 "closure_text":interview.closure_text,
-                "historial_chat":get_chat_days_by_user(user_id, db)
+                "historial_chat":get_chat_days_by_user(user_id,interview_id, db)
             }
     
                 
