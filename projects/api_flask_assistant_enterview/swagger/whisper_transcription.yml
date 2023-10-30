@@ -1,0 +1,72 @@
+swagger: '2.0'
+info:
+  title: Transcribe audio using OpenAI Whisper.
+  description: Transcribe audio using OpenAI Whisper.
+  version: '1.0'
+consumes:
+  - multipart/form-data
+produces:
+  - application/json
+paths:
+  /transcribe-audio-openai-small:
+    post:
+      summary: Transcribe audio using OpenAI Whisper (small model).
+      parameters:
+        - name: audio
+          in: formData
+          type: file
+          required: true
+          description: Audio file to transcribe.
+      responses:
+        '200':
+          description: Text transcribed from the audio file.
+          schema:
+            type: object
+            properties:
+              text_result:
+                type: string
+        '400':
+          description: Bad request.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  /transcribe-audio-openai-medium:
+    post:
+      summary: Transcribe audio using OpenAI Whisper (medium model).
+      parameters:
+        - name: audio
+          in: formData
+          type: file
+          required: true
+          description: Audio file to transcribe.
+      responses:
+        '200':
+          description: Text transcribed from the audio file.
+          schema:
+            type: object
+            properties:
+              text_result:
+                type: string
+        '400':
+          description: Bad request.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
