@@ -13,6 +13,7 @@ from .transcription_routes import model_whisper_medium
 from ai.transcription import transcribe_audio_no_delete
 import os
 from datetime import datetime
+from .security import oauth2_scheme
 
 router_history = APIRouter()
 
@@ -22,7 +23,7 @@ router_history = APIRouter()
     response_model=List[HistoryDtoOut],
     description="Get a list of all histories",
 )
-def get_histories(db: Session = Depends(get_db)):
+def get_histories(db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     histories = db.query(History).all()
     return histories
 
@@ -33,7 +34,7 @@ def get_histories(db: Session = Depends(get_db)):
     response_model=HistoryDtoOut,
     description="Get a history by ID",
 )
-def get_history(history_id: int, db: Session = Depends(get_db)):
+def get_history(history_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     history = db.query(History).filter(History.id == history_id).first()
     if history is None:
         raise HTTPException(status_code=404, detail="History not found")
@@ -53,7 +54,7 @@ def create_history(
     message: str = None,
     question_id: int = None,
     audio: UploadFile = None,  # Hacer que el audio sea opcional
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)
 ):
     #history_data = history_create.dict()
     history_data = {
@@ -116,7 +117,7 @@ def create_history(
     response_model=HistoryDtoOut,
     description="Update a history by ID",
 )
-def update_history(history_id: int, history_update: HistoryDtoIn, db: Session = Depends(get_db)):
+def update_history(history_id: int, history_update: HistoryDtoIn, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     history = db.query(History).filter(History.id == history_id).first()
     if history is None:
         raise HTTPException(status_code=404, detail="History not found")
@@ -135,7 +136,7 @@ def update_history(history_id: int, history_update: HistoryDtoIn, db: Session = 
     response_model=None,
     description="Delete a history by ID",
 )
-def delete_history(history_id: int, db: Session = Depends(get_db)):
+def delete_history(history_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     history = db.query(History).filter(History.id == history_id).first()
     if history is None:
         raise HTTPException(status_code=404, detail="History not found")

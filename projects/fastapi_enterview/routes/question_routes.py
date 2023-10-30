@@ -7,6 +7,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from models.question import Question
 from fastapi.responses import JSONResponse
+from .security import oauth2_scheme
 
 router_question = APIRouter()
 
@@ -16,7 +17,7 @@ router_question = APIRouter()
     response_model=List[QuestionDtoOut],
     description="Get a list of all questions",
 )
-def get_questions(db: Session = Depends(get_db)):
+def get_questions(db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     questions = db.query(Question).all()
     return questions
 
@@ -27,7 +28,7 @@ def get_questions(db: Session = Depends(get_db)):
     response_model=QuestionDtoOut,
     description="Get a question by ID",
 )
-def get_question(question_id: int, db: Session = Depends(get_db)):
+def get_question(question_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     question = db.query(Question).filter(Question.id == question_id).first()
     if question is None:
         raise HTTPException(status_code=404, detail="Question not found")
@@ -39,7 +40,7 @@ def get_question(question_id: int, db: Session = Depends(get_db)):
     response_model=QuestionDtoOut,
     description="Create a new question",
 )
-def create_question(question_create: QuestionDtoIn, db: Session = Depends(get_db)):
+def create_question(question_create: QuestionDtoIn, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     question = Question(**question_create.dict())  # Crear una instancia de Question a partir de los datos del DTO
     db.add(question)
     db.commit()
@@ -52,7 +53,7 @@ def create_question(question_create: QuestionDtoIn, db: Session = Depends(get_db
     response_model=QuestionDtoOut,
     description="Update a question by ID",
 )
-def update_question(question_id: int, question_update: QuestionDtoIn, db: Session = Depends(get_db)):
+def update_question(question_id: int, question_update: QuestionDtoIn, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     question = db.query(Question).filter(Question.id == question_id).first()
     if question is None:
         raise HTTPException(status_code=404, detail="Question not found")
@@ -71,7 +72,7 @@ def update_question(question_id: int, question_update: QuestionDtoIn, db: Sessio
     response_model=None,
     description="Delete a question by ID",
 )
-def delete_question(question_id: int, db: Session = Depends(get_db)):
+def delete_question(question_id: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
     question = db.query(Question).filter(Question.id == question_id).first()
     if question is None:
         raise HTTPException(status_code=404, detail="Question not found")

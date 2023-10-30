@@ -5,6 +5,7 @@ from routes.user_routes import router_user
 from routes.interview_routes import router_interview
 from routes.question_routes import router_question
 from routes.history_routes import router_history
+from routes.security import router_security
 from configurations.config import settings
 
 app = FastAPI(
@@ -30,3 +31,8 @@ app.include_router(router_user, prefix="/users", tags=["users"])
 app.include_router(router_interview, prefix="/interviews", tags=["interviews"])
 app.include_router(router_question, prefix="/questions", tags=["questions"])
 app.include_router(router_history, prefix="/histories", tags=["histories"])
+app.include_router(router_security, prefix="/security", tags=["security"])
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
