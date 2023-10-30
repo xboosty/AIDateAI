@@ -18,7 +18,7 @@ def transcribe_audio_to_text(filename, model_whisper):
             )
             return transcript['text']
         else:
-            return "The file does not exist in the specified location."
+            raise Exception("The file does not exist in the specified location.")
 
     except Exception as e:
         return "An error occurred during transcription: {}".format(e)
@@ -33,3 +33,10 @@ def transcribe_audio(model, audio):
     finally:
         print("Deleting temp audio file: {}".format(temp_audio_path))
         os.remove(temp_audio_path)
+        
+def transcribe_audio_no_delete(model,full_path):    
+    try:        
+        text_result = transcribe_audio_to_text(full_path, model)
+        return text_result
+    except Exception as e:
+        return {'error': str(e)}, 500

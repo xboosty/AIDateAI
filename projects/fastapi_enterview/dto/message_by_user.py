@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class MessageByUserDto(BaseModel):
     email: str
@@ -6,5 +7,5 @@ class MessageByUserDto(BaseModel):
     status_message: str
     hour: str
     is_bot: bool #contrario a is_response
-    audio: bytes
+    audio: Optional[str] = None
     

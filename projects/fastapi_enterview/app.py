@@ -13,6 +13,7 @@ app = FastAPI(
         version = "1.0.0",
     )
 
+
 # Set up CORS middleware
 app.add_middleware(
     CORSMiddleware,
