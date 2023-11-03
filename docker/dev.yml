@@ -1,0 +1,37 @@
+version: '3'
+
+volumes:
+  db_data: {}
+  audio_data: {}
+
+services:
+  db:
+    image: mysql:8.0.35
+    restart: always
+    ports:
+      - "$AIDATEMLDEV_DB_PORT:3306"
+    env_file:
+      - .envs/dev/db.env
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
+      timeout: 20s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/development/app/Dockerfile
+    ports:
+      - "$AIDATEMLDEV_APP_PORT:80"
+    env_file:
+      - .envs/dev/db.env
+      - .envs/dev/app.env
+    volumes:
+      - ./fastapi_enterview:/app
+      - audio_data:/app/audios
+    depends_on:
+      db:
+        condition: service_healthy
+    command: /start
