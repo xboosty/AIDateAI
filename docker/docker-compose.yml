@@ -1,33 +1,26 @@
 version: '3'
+
+volumes:
+  db_data: {}
+  audio_data: {}
+
 services:
-  postgres:
-    container_name: ntsprint-aidateai-postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: aidate
-      POSTGRES_PASSWORD: aidate
-      POSTGRES_DB: assitantdb
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  rabbitmq:
-    container_name: ntsprint-aidateai-rabbitmq
-    image: "rabbitmq:3.8-management"
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-
-  python-app:
+  app:    
+    container_name: aidateai_prod_app
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/production/app/Dockerfile    
     volumes:
-      - ./assistant_enterview:/app
+      - ./fastapi_enterview:/app
+      - audio_data:/app/audios    
+    command: /start
+
+  nginx:
+    container_name: aidateai_prod_nginx
+    build:
+      context: .
+      dockerfile: ./docker/production/nginx/Dockerfile    
     depends_on:
-      - postgres
-      - rabbitmq
-    command: ["python", "api.py"] # Puedes cambiar "api.py" por el archivo que quieras ejecutar
-volumes:
-  postgres_data:
+      - app
+    volumes:        
+      - audio_data:/usr/share/nginx/audios
