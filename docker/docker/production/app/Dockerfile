@@ -21,7 +21,7 @@ RUN pip install -r ai_requirements.txt
 
 #RUN pip install "git+https://github.com/openai/whisper.git" 
 
-COPY ./docker/app/dev/start /start
+COPY ./docker/development/app/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
