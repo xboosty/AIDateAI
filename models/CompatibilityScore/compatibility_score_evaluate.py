@@ -31,7 +31,8 @@ def generate_dataset(num_line):
     data = []
     
     for _ in range(num_line):
-        vector_length = random.randint(1, 20)# Generate a random vector length
+        #vector_length = random.randint(1, 20)# Generate a random vector length
+        vector_length = 5# Generate a random vector length
                 
         # Generate vectors to offers and demands to person A and person B
         offers_A = [random.randint(1, 100) for _ in range(vector_length)]
@@ -47,9 +48,9 @@ def generate_dataset(num_line):
     df = pd.DataFrame(data, columns=['offers_A', 'demands_A', 'offers_B', 'demands_B', 'compatibility_percent'])
 
     # Save the DataFrame as a CSV file
-    df.to_csv('compatibility_dataset.csv', index=False)
+    df.to_csv('compatibility_dataset_len5.csv', index=False)
 
-generate_dataset(5000)
+generate_dataset(3000)
 
 
 # Ejemplo de uso de compatibility_score
