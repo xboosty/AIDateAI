@@ -6,6 +6,12 @@ volumes:
 
 services:
   app:
+    environment:
+      - MYSQL_USER=sa
+      - MYSQL_PASSWORD=Winner2001.
+      - MYSQL_DATABASE=aidateml
+      - DB_HOST=aidateml.ccdlv7vo5t4q.us-east-1.rds.amazonaws.com
+      - ALLOWED_HOSTS=*
     container_name: aidateai_prod_app
     build:
       context: .
