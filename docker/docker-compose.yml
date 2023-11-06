@@ -1,26 +1,26 @@
-version: '3'
+version: "3"
 
 volumes:
   db_data: {}
   audio_data: {}
 
 services:
-  app:    
+  app:
     container_name: aidateai_prod_app
     build:
       context: .
-      dockerfile: docker/production/app/Dockerfile    
+      dockerfile: docker/production/app/Dockerfile
     volumes:
       - ./fastapi_enterview:/app
-      - audio_data:/app/audios    
+      - audio_data:/app/audios
     command: /start
 
   nginx:
     container_name: aidateai_prod_nginx
     build:
       context: .
-      dockerfile: ./docker/production/nginx/Dockerfile    
+      dockerfile: ./docker/production/nginx/Dockerfile
     depends_on:
       - app
-    volumes:        
+    volumes:
       - audio_data:/usr/share/nginx/audios
