@@ -15,6 +15,9 @@ from models.question import Question
 from sqlalchemy import asc
 from datetime import datetime
 from .security import oauth2_scheme
+import random
+import tensorflow as tf
+import numpy as np
 
 router_user = APIRouter()
 
@@ -71,6 +74,23 @@ def get_user_by_email(email: str, db: Session = Depends(get_db),current_user: st
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+@router_user.get(
+    "/users/compatibility-score/{user_idA}/{user_idB}",
+    tags=["users"],
+    description="Get compatibility score between  two users",
+)
+def get_compatibility_score(user_idA: int, user_idB: int, db: Session = Depends(get_db),current_user: str = Depends(oauth2_scheme)):
+    offers_A, demands_A, offers_B, demands_B = getvectors_offers_demands(user_idA, user_idB)
+    
+    model = tf.keras.models.load_model("./ai/models/score_model_with_transferlearning.h5")
+
+    input_vector = np.concatenate([offers_A, demands_A, offers_B, demands_B])
+
+    predicted_percentage = model.predict(np.array([input_vector]))
+    predicted_percentage_list = predicted_percentage.tolist()  # Convierte a lista de Python
+    return predicted_percentage_list[0][0]
+
 
 @router_user.post(
     "/users",
@@ -210,6 +230,15 @@ def get_days(date_to_compare: datetime):
     elif diference.days == 1:
         return "Yesterday"
     return date_to_compare.strftime("%d/%m/%Y")
+
+# Obtener los vectores de ofertas y demandas de dos usuarios solo para hardcodear,
+# hasta que se implemente la funcionalidad
+def getvectors_offers_demands(user_idA, user_idB):    
+    offers_A = [random.randint(1, 100) for _ in range(60)]
+    demands_A = [random.randint(1, 100) for _ in range(16)]
+    offers_B = [random.randint(1, 100) for _ in range(60)]
+    demands_B = [random.randint(1, 100) for _ in range(16)]
+    return offers_A, demands_A, offers_B, demands_B
     
     
     
